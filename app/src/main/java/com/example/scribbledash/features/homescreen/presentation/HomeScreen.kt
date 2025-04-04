@@ -20,8 +20,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.scribbledash.R
+import com.example.scribbledash.features.theme.AppTypography
 import com.example.scribbledash.features.theme.Gradient
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +51,12 @@ fun HomeScreen(
                         titleContentColor = MaterialTheme.colorScheme.onSurface
                     ),
                     title = {
-                        Text(text = "Scribble Dash") // App title at the top left
+                        Text(
+                            text = stringResource(R.string.scribble_dash_title),
+                            style = AppTypography.headlineLarge,
+                            color = MaterialTheme.colorScheme.onBackground,
+
+                        ) // App title at the top left
                     }
                 )
             },
