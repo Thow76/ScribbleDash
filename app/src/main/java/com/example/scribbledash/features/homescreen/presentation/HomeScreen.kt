@@ -31,11 +31,11 @@ import com.example.scribbledash.features.theme.Gradient
 @Composable
 fun HomeScreen(
     navController: NavController,
-    //viewModel: HomeViewModel,
-//    onNavigateToDrawScreen: () -> Unit, // Callback for navigation
-//    onNavigateToOtherScreen: () -> Unit // Future or second tab callback
+    viewModel: HomeViewModel,
+    //onNavigateToDrawScreen: () -> Unit, // Callback for navigation
+    //onNavigateToOtherScreen: () -> Unit // Future or second tab callback
 ) {
-    //val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     Box(
         modifier = Modifier
@@ -77,28 +77,28 @@ fun HomeScreen(
                     .padding(top = 48.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                //            Text(
-                //                text = uiState.title,
-                //                style = MaterialTheme.typography.headlineMedium
-                //            )
+                            Text(
+                                text = stringResource(R.string.home_screen_title),
+                                style = MaterialTheme.typography.displayMedium
+                            )
                 Spacer(modifier = Modifier.height(8.dp))
-                //            Text(
-                //                text = uiState.subtitle,
-                //                style = MaterialTheme.typography.bodyMedium
-                //            )
+                            Text(
+                                text = stringResource(R.string.select_game_mode),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Game Mode UI
-                //            GameModeCard(
-                //                modeName = "One Round Wonder",
-                //                onClick = {
-                //                    // Inform ViewModel that the card was clicked
-                //                   // viewModel.handleEvent(HomeUiEvent.OnGameModeClicked)
-                //                    // Then navigate
-                //                    //onNavigateToDrawScreen()
-                //                }
-                //            )
+                            GameModeCard(
+                                modeName = "One Round Wonder",
+                                onClick = {
+                                    // Inform ViewModel that the card was clicked
+                                   // viewModel.handleEvent(HomeUiEvent.OnGameModeClicked)
+                                    // Then navigate
+                                    //onNavigateToDrawScreen()
+                                }
+                            )
             }
         }
     }
