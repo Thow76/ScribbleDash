@@ -15,6 +15,7 @@ private val LightColorScheme = lightColorScheme(
     surface = ScribbleColors.SurfaceHigh,
     onBackground = ScribbleColors.OnBackground,
     onSurface = ScribbleColors.OnSurface,
+    outline = ScribbleColors.Success
 )
 
 @Composable
