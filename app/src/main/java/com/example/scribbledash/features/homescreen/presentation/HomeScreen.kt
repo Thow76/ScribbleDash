@@ -32,7 +32,7 @@ import com.example.scribbledash.features.theme.Gradient
 fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel,
-    //onNavigateToDrawScreen: () -> Unit, // Callback for navigation
+    onNavigateToDrawScreen: () -> Unit, // Callback for navigation
     //onNavigateToOtherScreen: () -> Unit // Future or second tab callback
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -40,7 +40,7 @@ fun HomeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(brush = com.example.scribbledash.features.theme.Gradient.mainGradient) // Background gradient
+            .background(brush = Gradient.mainGradient) // Background gradient
     ) {
         Scaffold(
             containerColor = Color.Transparent,
@@ -92,12 +92,12 @@ fun HomeScreen(
                 // Game Mode UI
                             GameModeCard(
                                 modeName = "One Round Wonder",
-                                onClick = {
+                                onClick = {},
                                     // Inform ViewModel that the card was clicked
-                                   // viewModel.handleEvent(HomeUiEvent.OnGameModeClicked)
+                                   //viewModel.handleEvent(HomeUiEvent.OnGameModeClicked)
                                     // Then navigate
                                     //onNavigateToDrawScreen()
-                                }
+                           navController = navController,
                             )
             }
         }
