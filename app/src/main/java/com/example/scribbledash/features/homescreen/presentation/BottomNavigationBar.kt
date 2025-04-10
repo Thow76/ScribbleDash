@@ -20,21 +20,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.scribbledash.R
+import com.example.scribbledash.navigation.Screen
 
 @Composable
 fun BottomNavigationBar(
-    onHomeClicked: () -> Unit,
-    onOtherClicked: () -> Unit
-) {
+    navController: NavController,
+
+    ) {
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surface
     ) {
-
         Row {
             NavigationBarItem(
                 selected = false, // or track selection state
-                onClick = { onOtherClicked() },
+                onClick = { },
                 icon = {
                     Image(
                         painter = painterResource(id = R.drawable.chart_icon),
@@ -44,7 +45,7 @@ fun BottomNavigationBar(
             )
             NavigationBarItem(
                     selected = false, // or track selection state
-            onClick = { onHomeClicked() },
+            onClick = { navController.navigate(Screen.Home.route)},
             icon = { Image(
                 painter = painterResource(
                     id = R.drawable.home_icon),

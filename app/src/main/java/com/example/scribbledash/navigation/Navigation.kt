@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.scribbledash.features.drawscreen.DrawScreen
+import com.example.scribbledash.features.drawscreen.presentation.DrawScreen
 import com.example.scribbledash.features.homescreen.presentation.HomeScreen
 import com.example.scribbledash.features.homescreen.presentation.HomeViewModel
 
@@ -18,9 +18,6 @@ fun NavigationRoot() {
         composable(Screen.Home.route) { HomeScreen(
             navController,
             viewModel = HomeViewModel(),
-            onNavigateToDrawScreen = {
-                navController.navigate(Screen.Draw.route)
-            }
         )
          }
 //        composable(Screen.Difficulty.route) { DifficultyScreen(navController) }
