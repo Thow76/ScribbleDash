@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scribbledash.R
 import com.example.scribbledash.features.theme.AppTypography
@@ -31,9 +32,7 @@ import com.example.scribbledash.features.theme.Gradient
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: HomeViewModel,
-    onNavigateToDrawScreen: () -> Unit, // Callback for navigation
-    //onNavigateToOtherScreen: () -> Unit // Future or second tab callback
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -62,10 +61,7 @@ fun HomeScreen(
             },
                     bottomBar = {
                         BottomNavigationBar(
-                            onHomeClicked = { /* Already on Home */ },
-                            onOtherClicked = {
-                                //onNavigateToOtherScreen()
-                                }
+                            navController = navController,
                         )
                     }
         ) { innerPadding ->
@@ -89,17 +85,12 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Game Mode UI
-                            GameModeCard(
-                                modeName = "One Round Wonder",
-                                onClick = {},
-                                    // Inform ViewModel that the card was clicked
-                                   //viewModel.handleEvent(HomeUiEvent.OnGameModeClicked)
-                                    // Then navigate
-                                    //onNavigateToDrawScreen()
-                           navController = navController,
-                            )
-            }
-        }
-    }
-}
+
+                GameModeCard(
+                    modeName = "One Round Wonder",
+                                    navController = navController
+                                )
+                            }
+                        }
+                    }
+                }

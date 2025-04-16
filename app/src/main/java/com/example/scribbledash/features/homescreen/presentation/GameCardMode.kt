@@ -39,7 +39,6 @@ import com.example.scribbledash.navigation.Screen
 fun GameModeCard(
     navController: NavController,
     modeName: String,
-    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier.size(380.dp, 128.dp)
