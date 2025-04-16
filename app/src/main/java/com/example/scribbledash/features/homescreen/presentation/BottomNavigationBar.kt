@@ -30,7 +30,7 @@ fun BottomNavigationBar(
 
     ) {
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
     ) {
         Row {
             NavigationBarItem(
