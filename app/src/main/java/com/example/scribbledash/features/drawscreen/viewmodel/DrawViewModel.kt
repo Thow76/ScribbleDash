@@ -1,8 +1,7 @@
-package com.example.scribbledash.features.drawscreen.presentation
+package com.example.scribbledash.features.drawscreen.viewmodel
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.lifecycle.ViewModel
 //import com.example.scribbledash.features.drawscreen.presentation.model.PathData
 import com.example.scribbledash.features.drawscreen.presentation.model.StrokeData
@@ -17,7 +16,8 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import kotlin.collections.plus
 
-class DrawingViewModel : ViewModel() {
+@HiltViewModel
+class DrawingViewModel @Inject constructor(): ViewModel() {
 
     private val _state = MutableStateFlow(DrawingViewState())
     val state: StateFlow<DrawingViewState> = _state.asStateFlow()
