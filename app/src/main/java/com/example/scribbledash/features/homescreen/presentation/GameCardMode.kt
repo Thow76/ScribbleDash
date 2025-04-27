@@ -42,7 +42,7 @@ fun GameModeCard(
 ) {
     Card(
         modifier = Modifier.size(380.dp, 128.dp)
-            .clickable { navController.navigate(Screen.Draw.route) },
+            .clickable { navController.navigate(Screen.Difficulty.route) },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = BorderStroke(6.dp, MaterialTheme.colorScheme.outline),
         shape = RoundedCornerShape(8.dp)
