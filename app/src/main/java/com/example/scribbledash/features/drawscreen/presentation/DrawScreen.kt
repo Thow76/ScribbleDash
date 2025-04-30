@@ -18,7 +18,7 @@ import androidx.navigation.NavController
 import com.example.scribbledash.R
 import com.example.scribbledash.features.drawscreen.presentation.components.DrawBottomActions
 import com.example.scribbledash.features.drawscreen.presentation.components.DrawingCanvas
-import com.example.scribbledash.features.drawscreen.presentation.state.DrawingAction
+import com.example.scribbledash.features.drawscreen.presentation.state.DrawingActionUiEvent
 import com.example.scribbledash.features.drawscreen.viewmodel.DrawingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,9 +53,9 @@ fun DrawScreen(
         },
         bottomBar = {
             DrawBottomActions(
-                onUndo = { viewModel.onAction(DrawingAction.OnUndoClick) },
-                onRedo = { viewModel.onAction(DrawingAction.OnRedoClick) },
-                onClear = { viewModel.onAction(DrawingAction.OnClearCanvasClick) },
+                onUndo = { viewModel.onAction(DrawingActionUiEvent.OnUndoClick) },
+                onRedo = { viewModel.onAction(DrawingActionUiEvent.OnRedoClick) },
+                onClear = { viewModel.onAction(DrawingActionUiEvent.OnClearCanvasClick) },
                 canUndo = uiState.paths.isNotEmpty(),
                 canRedo = uiState.undonePaths.isNotEmpty(),
                 canClear = uiState.paths.isNotEmpty()
@@ -81,13 +81,13 @@ fun DrawScreen(
                     paths = uiState.paths,
                     currentPath = uiState.currentPath,
                     onDrawStart = { offset ->
-                        viewModel.onAction(DrawingAction.OnNewPathStart(offset))
+                        viewModel.onAction(DrawingActionUiEvent.OnNewPathStart(offset))
                     },
                     onDrawMove = { offset ->
-                        viewModel.onAction(DrawingAction.OnDraw(offset))
+                        viewModel.onAction(DrawingActionUiEvent.OnDraw(offset))
                     },
                     onDrawEnd = {
-                        viewModel.onAction(DrawingAction.OnPathEnd)
+                        viewModel.onAction(DrawingActionUiEvent.OnPathEnd)
                     }
                 )
             }

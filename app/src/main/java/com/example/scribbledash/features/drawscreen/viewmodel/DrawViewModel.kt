@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 //import com.example.scribbledash.features.drawscreen.presentation.model.PathData
 import com.example.scribbledash.features.drawscreen.presentation.model.StrokeData
-import com.example.scribbledash.features.drawscreen.presentation.state.DrawingAction
+import com.example.scribbledash.features.drawscreen.presentation.state.DrawingActionUiEvent
 //import com.example.scribbledash.features.drawscreen.presentation.state.DrawingState
 import com.example.scribbledash.features.drawscreen.presentation.state.DrawingViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,16 +22,16 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
     private val _state = MutableStateFlow(DrawingViewState())
     val state: StateFlow<DrawingViewState> = _state.asStateFlow()
 
-    fun onAction(action: DrawingAction) {
+    fun onAction(action: DrawingActionUiEvent) {
         when (action) {
-            is DrawingAction.OnNewPathStart -> handleDrawStart(action.offset)
-            is DrawingAction.OnDraw -> handleDrawMove(action.offset)
-            is DrawingAction.OnPathEnd -> handleDrawEnd()
-            is DrawingAction.OnSelectColor -> handleColorSelection(action.color)
-            is DrawingAction.OnStrokeWidthChange -> handleStrokeWidthChange(action.width)
-            is DrawingAction.OnUndoClick -> handleUndo()
-            is DrawingAction.OnRedoClick -> handleRedo()
-            is DrawingAction.OnClearCanvasClick -> handleClear()
+            is DrawingActionUiEvent.OnNewPathStart -> handleDrawStart(action.offset)
+            is DrawingActionUiEvent.OnDraw -> handleDrawMove(action.offset)
+            is DrawingActionUiEvent.OnPathEnd -> handleDrawEnd()
+            is DrawingActionUiEvent.OnSelectColor -> handleColorSelection(action.color)
+            is DrawingActionUiEvent.OnStrokeWidthChange -> handleStrokeWidthChange(action.width)
+            is DrawingActionUiEvent.OnUndoClick -> handleUndo()
+            is DrawingActionUiEvent.OnRedoClick -> handleRedo()
+            is DrawingActionUiEvent.OnClearCanvasClick -> handleClear()
         }
     }
 
