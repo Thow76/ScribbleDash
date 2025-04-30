@@ -1,7 +1,9 @@
-package com.example.scribbledash.features.homescreen.presentation
+package com.example.scribbledash.features.homescreen.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scribbledash.features.homescreen.state.HomeUiEvent
+import com.example.scribbledash.features.homescreen.state.HomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

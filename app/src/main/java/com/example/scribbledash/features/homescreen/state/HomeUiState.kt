@@ -1,6 +1,4 @@
-package com.example.scribbledash.features.homescreen.presentation
-
-import com.example.scribbledash.R
+package com.example.scribbledash.features.homescreen.state
 
 data class HomeUiState(
     val isLoading: Boolean = false,
