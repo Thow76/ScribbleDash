@@ -8,7 +8,7 @@ data class DrawingViewState(
     val undonePaths: List<StrokeData> = emptyList(),
     val currentPath: StrokeData? = null,
     val selectedColor: Color = Color.Black,
-    val thickness: Float = 5f
+    //val thickness: Float = 5f
 )
 
 
