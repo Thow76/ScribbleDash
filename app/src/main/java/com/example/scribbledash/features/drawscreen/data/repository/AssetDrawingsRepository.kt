@@ -1,6 +1,8 @@
 package com.example.scribbledash.data.repository
 
 import android.content.res.AssetManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Xml
 import androidx.compose.ui.geometry.Offset
 import androidx.core.graphics.PathParser
@@ -38,4 +40,9 @@ class AssetDrawingsRepository @Inject constructor(
 
         return result
     }
+    override fun loadDrawingAsBitmap(path: String): Bitmap {
+        val inputStream = assetManager.open("drawings/$path")
+        return BitmapFactory.decodeStream(inputStream)
+    }
+
 }

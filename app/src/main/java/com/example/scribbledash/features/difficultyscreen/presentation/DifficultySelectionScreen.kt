@@ -23,6 +23,7 @@ import com.example.scribbledash.core.components.ScreenHeader
 import com.example.scribbledash.features.difficultyscreen.components.DifficultyOptions
 import com.example.scribbledash.features.difficultyscreen.state.DifficultySelectionUiEvent
 import com.example.scribbledash.features.difficultyscreen.viewmodel.DifficultySelectionViewModel
+import com.example.scribbledash.navigation.Screen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,11 +38,13 @@ fun DifficultyScreen(
         viewModel.eventFlow.collect { event ->
             when (event) {
                 is DifficultySelectionViewModel.UiEvent.NavigateBack -> navController.popBackStack()
-                is DifficultySelectionViewModel.UiEvent.NavigateToDraw -> navController.navigate("draw/${event.difficulty.name}")
+                is DifficultySelectionViewModel.UiEvent.NavigateToDraw -> {
+                    // Navigate to OneRoundWonder screen with difficulty parameter
+                    navController.navigate(Screen.OneRoundWonder.route.replace("{difficulty}", event.difficulty.name))
+                }
             }
         }
     }
-
     Scaffold(
         topBar = {
             CustomTopAppBar(
