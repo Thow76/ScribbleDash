@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.scribbledash.features.difficultyscreen.presentation.DifficultyScreen
+import androidx.navigation.navArgument
+import com.example.scribbledash.features.difficultyscreen.domain.Difficulty
+import com.example.scribbledash.features.difficultyscreen.presentation.DifficultySelectionScreen
 import com.example.scribbledash.features.drawscreen.presentation.DrawScreen
 import com.example.scribbledash.features.homescreen.presentation.HomeScreen
 
@@ -20,11 +22,21 @@ fun NavigationRoot() {
         )
          }
        composable(Screen.Difficulty.route) {
-           DifficultyScreen(
+           DifficultySelectionScreen(
                navController) }
-        composable(Screen.Draw.route) {
+        composable(
+            route = "${Screen.Draw.route}/{difficulty}",
+            arguments = listOf(
+                navArgument("difficulty") {
+                    type = androidx.navigation.NavType.StringType
+                }
+            )
+        ) { backStack ->
+            val difficulty = backStack.arguments?.getString("difficulty")
+                ?: Difficulty.Beginner.name
             DrawScreen(
-                navController,
-                ) }
-    }
-}
+                navController = navController,
+                difficulty = Difficulty.valueOf(difficulty)
+            )
+        }
+}}

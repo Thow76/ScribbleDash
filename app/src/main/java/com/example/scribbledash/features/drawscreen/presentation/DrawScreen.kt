@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scribbledash.R
+import com.example.scribbledash.features.difficultyscreen.domain.Difficulty
 import com.example.scribbledash.features.drawscreen.presentation.components.DrawBottomActions
 import com.example.scribbledash.features.drawscreen.presentation.components.DrawingCanvas
 import com.example.scribbledash.features.drawscreen.presentation.state.DrawingActionUiEvent
@@ -25,6 +26,7 @@ import com.example.scribbledash.features.drawscreen.viewmodel.DrawingViewModel
 @Composable
 fun DrawScreen(
     navController: NavController,
+    difficulty: Difficulty,
     viewModel: DrawingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.state.collectAsState()

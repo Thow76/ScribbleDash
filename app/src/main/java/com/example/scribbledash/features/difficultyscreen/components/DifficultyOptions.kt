@@ -65,7 +65,7 @@ fun DifficultyOptions(
             ) {
                 Image(
                     painter = painterResource(id = resourceId),
-                    contentDescription = difficulty.title,
+                    contentDescription = difficulty.name,
                     contentScale = ContentScale.None,
                 )
             }
@@ -73,7 +73,7 @@ fun DifficultyOptions(
 
         Text(
             modifier = Modifier.offset(y = 12.dp),
-            text = difficulty.title,
+            text = difficulty.name,
             style = MaterialTheme.typography.bodyMedium,
             color = Color(0xFF514437)
         )

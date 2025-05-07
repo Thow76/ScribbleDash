@@ -1,17 +1,12 @@
 package com.example.scribbledash.features.difficultyscreen.presentation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -23,11 +18,12 @@ import com.example.scribbledash.core.components.ScreenHeader
 import com.example.scribbledash.features.difficultyscreen.components.DifficultyOptions
 import com.example.scribbledash.features.difficultyscreen.state.DifficultySelectionUiEvent
 import com.example.scribbledash.features.difficultyscreen.viewmodel.DifficultySelectionViewModel
+import com.example.scribbledash.navigation.Screen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DifficultyScreen(
+fun DifficultySelectionScreen(
     navController: NavController,
     viewModel: DifficultySelectionViewModel = hiltViewModel()
 ) {
@@ -37,7 +33,7 @@ fun DifficultyScreen(
         viewModel.eventFlow.collect { event ->
             when (event) {
                 is DifficultySelectionViewModel.UiEvent.NavigateBack -> navController.popBackStack()
-                is DifficultySelectionViewModel.UiEvent.NavigateToDraw -> navController.navigate("draw/${event.difficulty.name}")
+                is DifficultySelectionViewModel.UiEvent.NavigateToDraw -> navController.navigate(("${Screen.Draw.route}/${event.difficulty.name}"))
             }
         }
     }
