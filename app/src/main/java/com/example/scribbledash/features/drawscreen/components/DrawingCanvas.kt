@@ -112,7 +112,7 @@ fun DrawingCanvas(
 /**
  * Creates a smooth path from points using Bezier curves
  */
-private fun createSmoothPath(points: List<Offset>): Path {
+fun createSmoothPath(points: List<Offset>): Path {
     val path = Path()
     if (points.isEmpty()) return path
 

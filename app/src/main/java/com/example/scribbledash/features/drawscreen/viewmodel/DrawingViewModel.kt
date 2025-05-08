@@ -3,27 +3,39 @@ package com.example.scribbledash.features.drawscreen.viewmodel
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.scribbledash.data.repository.DrawingsRepositoryInterface
+import com.example.scribbledash.features.difficultyscreen.domain.Difficulty
 //import com.example.scribbledash.features.drawscreen.presentation.model.PathData
 import com.example.scribbledash.features.drawscreen.presentation.model.StrokeData
 import com.example.scribbledash.features.drawscreen.presentation.state.DrawingActionUiEvent
 //import com.example.scribbledash.features.drawscreen.presentation.state.DrawingState
-import com.example.scribbledash.features.drawscreen.presentation.state.DrawingViewState
+import com.example.scribbledash.features.drawscreen.presentation.state.DrawingState
+import com.example.scribbledash.features.drawscreen.state.GameState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.collections.plus
 
 @HiltViewModel
-class DrawingViewModel @Inject constructor(): ViewModel() {
+class DrawingViewModel @Inject constructor(
+    private val repository: DrawingsRepositoryInterface
+): ViewModel() {
 
-    private val _state = MutableStateFlow(DrawingViewState())
-    val state: StateFlow<DrawingViewState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(DrawingState())
+    val state: StateFlow<DrawingState> = _state.asStateFlow()
 
     fun onAction(action: DrawingActionUiEvent) {
         when (action) {
+            is DrawingActionUiEvent.OnStartGame       -> initGame(action.difficulty)
+            DrawingActionUiEvent.OnTick               -> tick()
+            DrawingActionUiEvent.OnDoneClick          -> finishDrawing()
+            DrawingActionUiEvent.OnRetryClick         -> initGame(_state.value)
             is DrawingActionUiEvent.OnNewPathStart -> handleDrawStart(action.offset)
             is DrawingActionUiEvent.OnDraw -> handleDrawMove(action.offset)
             is DrawingActionUiEvent.OnPathEnd -> handleDrawEnd()
@@ -33,6 +45,46 @@ class DrawingViewModel @Inject constructor(): ViewModel() {
             is DrawingActionUiEvent.OnRedoClick -> handleRedo()
             is DrawingActionUiEvent.OnClearCanvasClick -> handleClear()
         }
+    }
+
+    private fun initGame(stateSnapshot: DrawingState) {
+        // overload to retry with same difficulty
+        // no-op: you should kick off via OnStartGame(difficulty)
+        initGame(stateSnapshot)
+    }
+
+    private fun initGame(difficulty: Difficulty) {
+        viewModelScope.launch {
+            // load a random drawing
+            val xmlName = repository.getRandomDrawing()
+            val target = repository.loadPaths(xmlName)
+
+            // reset everything
+            _state.update {
+                DrawingState(
+                    gameState   = GameState.Preview,
+                    countdown   = 3,
+                    targetPaths = target
+                )
+            }
+
+            // countdown loop
+            for (i in 3 downTo 1) {
+                _state.update { it.copy(countdown = i) }
+                delay(1_000)
+            }
+            _state.update { it.copy(gameState = GameState.Drawing) }
+        }
+    }
+
+    private fun tick() {
+        // unused if using the loop above
+    }
+
+    private fun finishDrawing() {
+        // TODO: compute actual similarity
+        val score = 0
+        _state.update { it.copy(gameState = GameState.Result, score = score) }
     }
 
     private fun handleDrawStart(offset: Offset) {

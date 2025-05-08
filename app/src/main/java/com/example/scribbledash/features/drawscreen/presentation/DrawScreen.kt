@@ -2,12 +2,13 @@
 package com.example.scribbledash.features.drawscreen.presentation
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,8 +19,8 @@ import androidx.navigation.NavController
 import com.example.scribbledash.R
 import com.example.scribbledash.features.difficultyscreen.domain.Difficulty
 import com.example.scribbledash.features.drawscreen.presentation.components.DrawBottomActions
-import com.example.scribbledash.features.drawscreen.presentation.components.DrawingCanvas
 import com.example.scribbledash.features.drawscreen.presentation.state.DrawingActionUiEvent
+import com.example.scribbledash.features.drawscreen.state.GameState
 import com.example.scribbledash.features.drawscreen.viewmodel.DrawingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,6 +31,11 @@ fun DrawScreen(
     viewModel: DrawingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.state.collectAsState()
+    val difficulty = remember(difficulty) { Difficulty.valueOf(difficulty.name) }
+
+    LaunchedEffect(difficulty) {
+        viewModel.onAction(DrawingActionUiEvent.OnStartGame(difficulty))
+    }
 
     Scaffold(
         topBar = {
@@ -58,43 +64,25 @@ fun DrawScreen(
                 onUndo = { viewModel.onAction(DrawingActionUiEvent.OnUndoClick) },
                 onRedo = { viewModel.onAction(DrawingActionUiEvent.OnRedoClick) },
                 onClear = { viewModel.onAction(DrawingActionUiEvent.OnClearCanvasClick) },
+                onDone = { viewModel.onAction(DrawingActionUiEvent.OnDoneClick) },
                 canUndo = uiState.paths.isNotEmpty(),
                 canRedo = uiState.undonePaths.isNotEmpty(),
-                canClear = uiState.paths.isNotEmpty()
-
+                canClear = uiState.paths.isNotEmpty(),
+                showDone = true
             )
         }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Time to Draw!",
-                style = MaterialTheme.typography.displayMedium,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-                DrawingCanvas(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    paths = uiState.paths,
-                    currentPath = uiState.currentPath,
-                    onDrawStart = { offset ->
-                        viewModel.onAction(DrawingActionUiEvent.OnNewPathStart(offset))
-                    },
-                    onDrawMove = { offset ->
-                        viewModel.onAction(DrawingActionUiEvent.OnDraw(offset))
-                    },
-                    onDrawEnd = {
-                        viewModel.onAction(DrawingActionUiEvent.OnPathEnd)
-                    }
-                )
+    ) { padding ->
+        Box(Modifier.padding(padding).fillMaxSize(), contentAlignment = Alignment.Center) {
+            when (uiState.gameState) {
+                GameState.Preview -> DrawScreenPreview(uiState.targetPaths, uiState.countdown)
+                GameState.Drawing -> DrawScreenContent(uiState, viewModel)
+                GameState.Result  -> DrawScreenResult(uiState.score ?: 0) {
+                    viewModel.onAction(DrawingActionUiEvent.OnRetryClick)
+                }
             }
         }
     }
+}
 
 
 

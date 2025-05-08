@@ -33,9 +33,12 @@ fun DrawBottomActions(
     onUndo: () -> Unit,
     onRedo: () -> Unit,
     onClear: () -> Unit,
+    onDone: () -> Unit,
     canUndo: Boolean = true,
     canRedo: Boolean = true,
-    canClear: Boolean = true
+    canClear: Boolean = true,
+    showDone: Boolean = false
+
 ) {
     Row(
         modifier = Modifier
@@ -93,22 +96,19 @@ fun DrawBottomActions(
                 .height(64.dp)
                 .width(201.dp)
                 .clip(RoundedCornerShape(22.dp))
-                .border(
-                    width = 5.dp,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    shape = RoundedCornerShape(22.dp)
-                )
+                .border(5.dp, MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(22.dp))
                 .background(
-                    if (canClear)
-                        MaterialTheme.colorScheme.outline
-                    else
-                        MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.7f)
+                    if (!showDone && canClear) MaterialTheme.colorScheme.outline
+                    else if (showDone) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.7f)
                 )
-                .clickable(enabled = canClear, onClick = onClear),
+                .clickable(enabled = (showDone || canClear)) {
+                    if (showDone) onDone() else onClear()
+                },
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Clear Canvas",
+                text = if (showDone) "Done" else "Clear Canvas",
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = MaterialTheme.typography.headlineMedium
             )
