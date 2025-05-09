@@ -2,11 +2,13 @@ package com.example.scribbledash.features.drawscreen.presentation.state
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import com.example.scribbledash.features.difficultyscreen.domain.Difficulty
 import com.example.scribbledash.features.drawscreen.presentation.model.StrokeData
 import com.example.scribbledash.features.drawscreen.state.GameState
 
 data class DrawingState(
     val gameState: GameState = GameState.Preview,
+    val difficulty: Difficulty = Difficulty.Beginner,
     val countdown: Int = 3,
     val targetPaths: List<List<Offset>> = emptyList(),
     val paths: List<StrokeData> = emptyList(),

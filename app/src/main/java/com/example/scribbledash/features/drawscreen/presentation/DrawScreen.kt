@@ -31,7 +31,7 @@ fun DrawScreen(
     viewModel: DrawingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.state.collectAsState()
-    val difficulty = remember(difficulty) { Difficulty.valueOf(difficulty.name) }
+    val initialDifficulty = remember(difficulty) { difficulty }
 
     LaunchedEffect(difficulty) {
         viewModel.onAction(DrawingActionUiEvent.OnStartGame(difficulty))

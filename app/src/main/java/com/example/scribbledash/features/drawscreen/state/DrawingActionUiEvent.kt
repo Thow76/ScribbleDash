@@ -7,7 +7,7 @@ import com.example.scribbledash.features.difficultyscreen.domain.Difficulty
 sealed interface DrawingActionUiEvent {
 
     data class OnStartGame(val difficulty: Difficulty) : DrawingActionUiEvent
-    object OnTick : DrawingActionUiEvent
+    // object OnTick : DrawingActionUiEvent
     object OnDoneClick : DrawingActionUiEvent
     object OnRetryClick : DrawingActionUiEvent
 

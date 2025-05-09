@@ -33,7 +33,7 @@ class DrawingViewModel @Inject constructor(
     fun onAction(action: DrawingActionUiEvent) {
         when (action) {
             is DrawingActionUiEvent.OnStartGame       -> initGame(action.difficulty)
-            DrawingActionUiEvent.OnTick               -> tick()
+            // DrawingActionUiEvent.OnTick               -> tick()
             DrawingActionUiEvent.OnDoneClick          -> finishDrawing()
             DrawingActionUiEvent.OnRetryClick         -> initGame(_state.value)
             is DrawingActionUiEvent.OnNewPathStart -> handleDrawStart(action.offset)
@@ -47,10 +47,14 @@ class DrawingViewModel @Inject constructor(
         }
     }
 
+//    private fun initGame(stateSnapshot: DrawingState) {
+//        // overload to retry with same difficulty
+//        // no-op: you should kick off via OnStartGame(difficulty)
+//        initGame(stateSnapshot)
+//    }
+
     private fun initGame(stateSnapshot: DrawingState) {
-        // overload to retry with same difficulty
-        // no-op: you should kick off via OnStartGame(difficulty)
-        initGame(stateSnapshot)
+        initGame(stateSnapshot.difficulty)  // now `difficulty` exists
     }
 
     private fun initGame(difficulty: Difficulty) {
@@ -63,6 +67,7 @@ class DrawingViewModel @Inject constructor(
             _state.update {
                 DrawingState(
                     gameState   = GameState.Preview,
+                    difficulty  = difficulty,
                     countdown   = 3,
                     targetPaths = target
                 )
