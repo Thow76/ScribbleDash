@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="100" height="100"
+     viewBox="0 0 100 100">
+  <!-- Cup body -->
+  <rect x="30" y="30" width="25" height="30"
+        fill="none" stroke="black" stroke-width="2" />
+  <!-- Handle (arc) -->
+  <path d="M55,35 
+           Q70,45 55,55"
+        fill="none" stroke="black" stroke-width="2" />
+  <!-- Base line -->
+  <line x1="30" y1="60" x2="55" y2="60"
+        stroke="black" stroke-width="2" />
+  <!-- Steam lines (simple vertical curves) -->
+  <path d="M35,30 C35,25 37,25 37,20"
+        fill="none" stroke="black" stroke-width="2" />
+  <path d="M40,30 C40,25 42,25 42,20"
+        fill="none" stroke="black" stroke-width="2" />
+</svg>
