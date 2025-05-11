@@ -36,6 +36,7 @@ class DrawingViewModel @Inject constructor(
             // DrawingActionUiEvent.OnTick               -> tick()
             DrawingActionUiEvent.OnDoneClick          -> finishDrawing()
             DrawingActionUiEvent.OnRetryClick         -> initGame(_state.value)
+            //DrawingActionUiEvent.OnRetryClick         -> initGame(action.difficulty)
             is DrawingActionUiEvent.OnNewPathStart -> handleDrawStart(action.offset)
             is DrawingActionUiEvent.OnDraw -> handleDrawMove(action.offset)
             is DrawingActionUiEvent.OnPathEnd -> handleDrawEnd()
@@ -47,40 +48,64 @@ class DrawingViewModel @Inject constructor(
         }
     }
 
-//    private fun initGame(stateSnapshot: DrawingState) {
-//        // overload to retry with same difficulty
-//        // no-op: you should kick off via OnStartGame(difficulty)
-//        initGame(stateSnapshot)
-//    }
+
 
     private fun initGame(stateSnapshot: DrawingState) {
         initGame(stateSnapshot.difficulty)  // now `difficulty` exists
     }
 
-    private fun initGame(difficulty: Difficulty) {
-        viewModelScope.launch {
-            // load a random drawing
-            val xmlName = repository.getRandomDrawing()
-            val target = repository.loadPaths(xmlName)
+//    private fun initGame(difficulty: Difficulty) {
+//        viewModelScope.launch {
+//            // load a random drawing
+//            val xmlName = repository.getRandomDrawing()
+//            val target = repository.loadPaths(xmlName)
+//
+//            // reset everything
+//            _state.update {
+//                DrawingState(
+//                    gameState   = GameState.Preview,
+//                    difficulty  = difficulty,
+//                    countdown   = 3,
+//                    targetPaths = target
+//                )
+//            }
+//
+//            // countdown loop
+//            for (i in 3 downTo 1) {
+//                _state.update { it.copy(countdown = i) }
+//                delay(1_000)
+//            }
+//            _state.update { it.copy(gameState = GameState.Drawing) }
+//        }
+//    }
 
-            // reset everything
-            _state.update {
-                DrawingState(
-                    gameState   = GameState.Preview,
-                    difficulty  = difficulty,
-                    countdown   = 3,
-                    targetPaths = target
-                )
-            }
+        private fun initGame(difficulty: Difficulty) {
+            viewModelScope.launch {
+                // 1) pick a random SVG
+                val svgName = repository.getRandomDrawing()       // now returns “foo.svg”
 
-            // countdown loop
-            for (i in 3 downTo 1) {
-                _state.update { it.copy(countdown = i) }
-                delay(1_000)
+                // 2) still load paths for smoothing/scoring (Option 2)
+                val target   = repository.loadPaths(svgName)      // unchanged parsing logic
+
+                // 3) emit Preview state with both svgName & targetPaths
+                _state.update {
+                    DrawingState(
+                        gameState   = GameState.Preview,
+                        countdown   = 3,
+                        svgName     = svgName,
+                        difficulty  = difficulty,
+                        targetPaths = target
+                    )
+                }
+
+                // countdown…
+                for (i in 3 downTo 1) {
+                    _state.update { it.copy(countdown = i) }
+                    delay(1_000)
+                }
+                _state.update { it.copy(gameState = GameState.Drawing) }
             }
-            _state.update { it.copy(gameState = GameState.Drawing) }
         }
-    }
 
     private fun tick() {
         // unused if using the loop above

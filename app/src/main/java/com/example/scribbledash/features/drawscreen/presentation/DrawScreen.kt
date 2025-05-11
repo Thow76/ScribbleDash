@@ -74,7 +74,11 @@ fun DrawScreen(
     ) { padding ->
         Box(Modifier.padding(padding).fillMaxSize(), contentAlignment = Alignment.Center) {
             when (uiState.gameState) {
-                GameState.Preview -> DrawScreenPreview(uiState.targetPaths, uiState.countdown)
+
+                GameState.Preview -> {
+                    val svgAsset = uiState.svgName
+                        ?: return@Box  // or show a fallback
+                    DrawScreenPreview(svgAssetName = svgAsset, uiState.countdown)}
                 GameState.Drawing -> DrawScreenContent(uiState, viewModel)
                 GameState.Result  -> DrawScreenResult(uiState.score ?: 0) {
                     viewModel.onAction(DrawingActionUiEvent.OnRetryClick)
