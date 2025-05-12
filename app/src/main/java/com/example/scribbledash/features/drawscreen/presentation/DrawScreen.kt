@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scribbledash.R
 import com.example.scribbledash.features.difficultyscreen.domain.Difficulty
+import com.example.scribbledash.features.drawscreen.components.CountdownDisplay
 import com.example.scribbledash.features.drawscreen.presentation.components.DrawBottomActions
 import com.example.scribbledash.features.drawscreen.presentation.state.DrawingActionUiEvent
 import com.example.scribbledash.features.drawscreen.state.GameState
@@ -60,16 +61,31 @@ fun DrawScreen(
             )
         },
         bottomBar = {
-            DrawBottomActions(
-                onUndo = { viewModel.onAction(DrawingActionUiEvent.OnUndoClick) },
-                onRedo = { viewModel.onAction(DrawingActionUiEvent.OnRedoClick) },
-                onClear = { viewModel.onAction(DrawingActionUiEvent.OnClearCanvasClick) },
-                onDone = { viewModel.onAction(DrawingActionUiEvent.OnDoneClick) },
-                canUndo = uiState.paths.isNotEmpty(),
-                canRedo = uiState.undonePaths.isNotEmpty(),
-                canClear = uiState.paths.isNotEmpty(),
-                showDone = true
-            )
+            when (uiState.gameState) {
+                GameState.Preview -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .navigationBarsPadding(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CountdownDisplay(countdown = uiState.countdown)
+                    }
+                }
+                else -> {
+                    DrawBottomActions(
+                        onUndo = { viewModel.onAction(DrawingActionUiEvent.OnUndoClick) },
+                        onRedo = { viewModel.onAction(DrawingActionUiEvent.OnRedoClick) },
+                        onClear = { viewModel.onAction(DrawingActionUiEvent.OnClearCanvasClick) },
+                        onDone = { viewModel.onAction(DrawingActionUiEvent.OnDoneClick) },
+                        canUndo = uiState.paths.isNotEmpty(),
+                        canRedo = uiState.undonePaths.isNotEmpty(),
+                        canClear = uiState.paths.isNotEmpty(),
+                        showDone = true
+                    )
+                }
+            }
         }
     ) { padding ->
         Box(Modifier.padding(padding).fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -79,7 +95,7 @@ fun DrawScreen(
                     val svgAsset = uiState.svgName
                         ?: return@Box  // or show a fallback
                     DrawScreenPreview(
-                        svgAssetName = svgAsset, uiState.countdown,
+                        svgAssetName = svgAsset, 
                         targetPaths  = uiState.targetPaths,
                         onDrawStart  = { viewModel.onAction(DrawingActionUiEvent.OnNewPathStart(it)) },
                         onDrawMove   = { viewModel.onAction(DrawingActionUiEvent.OnDraw(it)) },

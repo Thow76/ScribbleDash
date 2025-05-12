@@ -19,7 +19,7 @@ fun DrawScreenContent(
     viewModel: DrawingViewModel
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Time to Draw!", style = MaterialTheme.typography.displaySmall)
+        Text("Time to Draw!", style = MaterialTheme.typography.displayMedium)
         DrawingCanvas(
             modifier = Modifier.fillMaxWidth(),
             paths = uiState.paths,
@@ -28,5 +28,6 @@ fun DrawScreenContent(
             onDrawMove  = { viewModel.onAction(DrawingActionUiEvent.OnDraw(it)) },
             onDrawEnd   = { viewModel.onAction(DrawingActionUiEvent.OnPathEnd) }
         )
+        Text("Your Drawing", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface)
     }
 }
