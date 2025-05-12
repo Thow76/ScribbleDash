@@ -78,7 +78,13 @@ fun DrawScreen(
                 GameState.Preview -> {
                     val svgAsset = uiState.svgName
                         ?: return@Box  // or show a fallback
-                    DrawScreenPreview(svgAssetName = svgAsset, uiState.countdown)}
+                    DrawScreenPreview(
+                        svgAssetName = svgAsset, uiState.countdown,
+                        targetPaths  = uiState.targetPaths,
+                        onDrawStart  = { viewModel.onAction(DrawingActionUiEvent.OnNewPathStart(it)) },
+                        onDrawMove   = { viewModel.onAction(DrawingActionUiEvent.OnDraw(it)) },
+                        onDrawEnd    = { viewModel.onAction(DrawingActionUiEvent.OnPathEnd) }
+                    )}
                 GameState.Drawing -> DrawScreenContent(uiState, viewModel)
                 GameState.Result  -> DrawScreenResult(uiState.score ?: 0) {
                     viewModel.onAction(DrawingActionUiEvent.OnRetryClick)

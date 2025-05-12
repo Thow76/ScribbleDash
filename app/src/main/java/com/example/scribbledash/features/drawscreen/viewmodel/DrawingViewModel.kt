@@ -45,6 +45,7 @@ class DrawingViewModel @Inject constructor(
             is DrawingActionUiEvent.OnUndoClick -> handleUndo()
             is DrawingActionUiEvent.OnRedoClick -> handleRedo()
             is DrawingActionUiEvent.OnClearCanvasClick -> handleClear()
+
         }
     }
 
@@ -53,31 +54,6 @@ class DrawingViewModel @Inject constructor(
     private fun initGame(stateSnapshot: DrawingState) {
         initGame(stateSnapshot.difficulty)  // now `difficulty` exists
     }
-
-//    private fun initGame(difficulty: Difficulty) {
-//        viewModelScope.launch {
-//            // load a random drawing
-//            val xmlName = repository.getRandomDrawing()
-//            val target = repository.loadPaths(xmlName)
-//
-//            // reset everything
-//            _state.update {
-//                DrawingState(
-//                    gameState   = GameState.Preview,
-//                    difficulty  = difficulty,
-//                    countdown   = 3,
-//                    targetPaths = target
-//                )
-//            }
-//
-//            // countdown loop
-//            for (i in 3 downTo 1) {
-//                _state.update { it.copy(countdown = i) }
-//                delay(1_000)
-//            }
-//            _state.update { it.copy(gameState = GameState.Drawing) }
-//        }
-//    }
 
         private fun initGame(difficulty: Difficulty) {
             viewModelScope.launch {

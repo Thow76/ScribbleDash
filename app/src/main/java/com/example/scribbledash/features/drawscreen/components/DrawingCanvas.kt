@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,8 +26,10 @@ import com.example.scribbledash.features.drawscreen.presentation.model.StrokeDat
 @Composable
 fun DrawingCanvas(
     modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
     paths: List<StrokeData>,
     currentPath: StrokeData?,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
     onDrawStart: (Offset) -> Unit,
     onDrawMove: (Offset) -> Unit,
     onDrawEnd: () -> Unit
@@ -34,14 +37,14 @@ fun DrawingCanvas(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 16.dp), // Add spacing around the canvas
+            .padding(contentPadding), // Add spacing around the canvas
         contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = Modifier
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(28.dp))
-                .background(MaterialTheme.colorScheme.onPrimary)
+                .background(backgroundColor)
                 .padding(8.dp), // Space between outer and inner border
             contentAlignment = Alignment.Center
         ) {
@@ -49,12 +52,12 @@ fun DrawingCanvas(
                 modifier = modifier
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(24.dp)) // Rounded corners
-                    .background(Color.White)         // Canvas background color
                     .border(
                         1.dp,
                         MaterialTheme.colorScheme.surfaceContainerLowest,
                         RoundedCornerShape(24.dp)
-                    ) // Optional visual edge
+                    )
+                    // Optional visual edge
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = onDrawStart,
