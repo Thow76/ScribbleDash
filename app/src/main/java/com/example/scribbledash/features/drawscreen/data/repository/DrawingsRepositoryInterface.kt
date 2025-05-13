@@ -9,5 +9,5 @@ interface DrawingsRepositoryInterface {
 
     /** Parses the given SVG asset into a list of stroke-paths (each a List<Offset>) */
     fun loadPaths(name: String): List<List<Offset>>
-    fun loadDrawingAsBitmap(path: String): Bitmap
+    //fun loadDrawingAsBitmap(path: String): Bitmap
 }

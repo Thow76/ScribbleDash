@@ -73,24 +73,24 @@ fun DrawBottomActions(
             Spacer(modifier = Modifier.width(16.dp))
             // Redo Button
             Box(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .clip(RoundedCornerShape(22.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerLow.copy(alpha = 0.4f))
-                        .clickable(enabled = canRedo, onClick = onRedo),
-            contentAlignment = Alignment.Center
-            ) {
-            Icon(
-                painter = painterResource(R.drawable.forward_icon),
-                contentDescription = "Redo",
                 modifier = Modifier
-                    .size(28.dp),
-                tint = if (canRedo)
-                    MaterialTheme.colorScheme.onSurface
-                else
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-            )
-        } }
+                    .size(64.dp)
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow.copy(alpha = 0.4f))
+                    .clickable(enabled = canRedo, onClick = onRedo),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.forward_icon),
+                    contentDescription = "Redo",
+                    modifier = Modifier
+                        .size(28.dp),
+                    tint = if (canRedo)
+                        MaterialTheme.colorScheme.onSurface
+                    else
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                )
+            } }
         // Done Button
         Box(
             modifier = Modifier
@@ -113,3 +113,4 @@ fun DrawBottomActions(
         }
     }
 }
+
