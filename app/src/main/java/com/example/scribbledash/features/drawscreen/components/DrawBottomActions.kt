@@ -1,8 +1,8 @@
 package com.example.scribbledash.features.drawscreen.presentation.components
 
+import androidx.compose.animation.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,6 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.scribbledash.R
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.navigationBarsPadding
 
 
@@ -34,6 +34,7 @@ fun DrawBottomActions(
     onRedo: () -> Unit,
     onClear: () -> Unit,
     onDone: () -> Unit,
+    hasStrokes: Boolean = false,
     canUndo: Boolean = true,
     canRedo: Boolean = true,
     canClear: Boolean = true,
@@ -43,41 +44,42 @@ fun DrawBottomActions(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(32.dp)
             .navigationBarsPadding(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Undo Button
-        Box(
-            modifier = Modifier
-                .size(64.dp)
-                .clip(RoundedCornerShape(22.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerLow.copy(alpha = 0.4f))
-                .clickable(enabled = canUndo, onClick = onUndo),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.reply_icon),
-                contentDescription = "Undo",
+        Row{
+            Box(
                 modifier = Modifier
-                    .size(28.dp),
-                tint = if (canUndo)
-                    MaterialTheme.colorScheme.onSurface
-                else
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-            )
-        }
-
-        // Redo Button
-        Box(
-            modifier = Modifier
-                .size(64.dp)
-                .clip(RoundedCornerShape(22.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerLow.copy(alpha = 0.4f))
-                .clickable(enabled = canRedo, onClick = onRedo),
+                    .size(64.dp)
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow.copy(alpha = 0.4f))
+                    .clickable(enabled = canUndo, onClick = onUndo),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.reply_icon),
+                    contentDescription = "Undo",
+                    modifier = Modifier
+                        .size(28.dp),
+                    tint = if (canUndo)
+                        MaterialTheme.colorScheme.onSurface
+                    else
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            // Redo Button
+            Box(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(22.dp))
+                        .background(MaterialTheme.colorScheme.surfaceContainerLow.copy(alpha = 0.4f))
+                        .clickable(enabled = canRedo, onClick = onRedo),
             contentAlignment = Alignment.Center
-        ) {
+            ) {
             Icon(
                 painter = painterResource(R.drawable.forward_icon),
                 contentDescription = "Redo",
@@ -88,29 +90,25 @@ fun DrawBottomActions(
                 else
                     MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
             )
-        }
-
-        // Clear Canvas Button
+        } }
+        // Done Button
         Box(
             modifier = Modifier
                 .height(64.dp)
-                .width(201.dp)
+                .width(112.dp)
                 .clip(RoundedCornerShape(22.dp))
                 .border(5.dp, MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(22.dp))
                 .background(
-                    if (!showDone && canClear) MaterialTheme.colorScheme.outline
-                    else if (showDone) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.7f)
+                    if (hasStrokes) Color(0xFF4CAF50) // Green color when strokes exist
+                    else MaterialTheme.colorScheme.surfaceContainerLowest
                 )
-                .clickable(enabled = (showDone || canClear)) {
-                    if (showDone) onDone() else onClear()
-                },
+                .clickable(onClick = onDone),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = if (showDone) "Done" else "Clear Canvas",
+                text = "Done!",
                 color = MaterialTheme.colorScheme.onPrimary,
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineSmall
             )
         }
     }

@@ -79,6 +79,7 @@ fun DrawScreen(
                         onRedo = { viewModel.onAction(DrawingActionUiEvent.OnRedoClick) },
                         onClear = { viewModel.onAction(DrawingActionUiEvent.OnClearCanvasClick) },
                         onDone = { viewModel.onAction(DrawingActionUiEvent.OnDoneClick) },
+                        hasStrokes = uiState.paths.isNotEmpty(),
                         canUndo = uiState.paths.isNotEmpty(),
                         canRedo = uiState.undonePaths.isNotEmpty(),
                         canClear = uiState.paths.isNotEmpty(),
