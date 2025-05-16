@@ -12,6 +12,7 @@ data class DrawingState(
     val svgName: String?          = null, // ← new
     val difficulty: Difficulty    = Difficulty.Beginner,
     val targetPaths: List<List<Offset>> = emptyList(),
+    val targetPathData: List<String>            = emptyList(),
     val paths:        List<StrokeData>   = emptyList(),
     val undonePaths:  List<StrokeData>   = emptyList(),
     val currentPath:  StrokeData?        = null,

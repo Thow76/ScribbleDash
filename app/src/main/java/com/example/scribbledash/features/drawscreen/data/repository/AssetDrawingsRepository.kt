@@ -43,5 +43,26 @@ class AssetDrawingsRepository @Inject constructor(
             parser.next()
         }
         return result
-//    }
-}}
+}
+
+    // 4) Extract raw SVG “d” strings for Milestone2 comparison
+    override fun loadRawPathData(name: String): List<String> {
+        val raw = assetManager.open("drawings/$name")
+            .bufferedReader()
+            .use { it.readText() }
+
+        val parser = Xml.newPullParser().apply { setInput(StringReader(raw)) }
+        val result = mutableListOf<String>()
+
+        while (parser.eventType != XmlPullParser.END_DOCUMENT) {
+            if (parser.eventType == XmlPullParser.START_TAG && parser.name == "path") {
+                parser.getAttributeValue(null, "d")?.let { d ->
+                    result += d
+                }
+            }
+            parser.next()
+        }
+        return result
+    }
+}
+
