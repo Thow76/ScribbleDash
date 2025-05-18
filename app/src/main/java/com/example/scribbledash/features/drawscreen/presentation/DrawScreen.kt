@@ -103,9 +103,13 @@ fun DrawScreen(
                         onDrawEnd    = { viewModel.onAction(DrawingActionUiEvent.OnPathEnd) }
                     )}
                 GameState.Drawing -> DrawScreenContent(uiState, viewModel)
-                GameState.Result  -> DrawScreenResult(uiState.score ?: 0) {
-                    viewModel.onAction(DrawingActionUiEvent.OnRetryClick)
-                }
+                GameState.Result -> DrawScreenResult(
+                    score = uiState.score ?: 0,
+                    onRetry = { viewModel.onAction(DrawingActionUiEvent.OnRetryClick) },
+                    onClose = { navController.popBackStack() },
+                    userPaths = uiState.paths,
+                    svgAssetName = uiState.svgName ?: ""
+                )
             }
         }
     }

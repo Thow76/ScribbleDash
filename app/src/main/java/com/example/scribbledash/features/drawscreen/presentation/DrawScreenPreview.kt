@@ -92,6 +92,7 @@ fun DrawScreenPreview(
                     modifier = Modifier.matchParentSize(),
                     backgroundColor = Color.Transparent,
                     paths = emptyList(),
+                    autoFit = false,
                     currentPath = null,
                     contentPadding = PaddingValues(0.dp),  // **override**!
                     onDrawStart = onDrawStart,
