@@ -62,18 +62,7 @@ fun DrawScreenResult(
     userPaths: List<StrokeData>,
     svgAssetName: String
 ) {
-    // 1) COMPUTE RAW BOUNDING BOX FOR USER PATHS
-    val allPts = userPaths.flatMap { it.points }
-    val minX = allPts.minOfOrNull { it.x } ?: 0f
-    val maxX = allPts.maxOfOrNull { it.x } ?: (minX + 1f)
-    val minY = allPts.minOfOrNull { it.y } ?: 0f
-    val maxY = allPts.maxOfOrNull { it.y } ?: (minY + 1f)
-    val drawingWidth = (maxX - minX).takeIf { it > 0f } ?: 1f
-    val drawingHeight = (maxY - minY).takeIf { it > 0f } ?: 1f
-    // Rect takes (left, top, right, bottom) in _original_ coordinate space:
-    val bounds = Rect(minX, minY, minX + drawingWidth, minY + drawingHeight)
-
-    // 2) SET UP COIL FOR STATIC SVG EXAMPLE
+    // SET UP COIL FOR STATIC SVG EXAMPLE
     val context = LocalContext.current
     val imageLoader = remember {
         ImageLoader.Builder(context)
@@ -133,12 +122,37 @@ fun DrawScreenResult(
                     )
                 }
 
-                // USER DRAWING: now just pass bounds into DrawingCanvas
+                // USER DRAWING: let DrawingCanvas handle scaling automatically
                 ResultCard(label = "Drawing", rotation = 8f) {
+                    // Calculate a slightly smaller bounding box to ensure strokes aren't cut off
+                    val adjustedBoundingBox = remember(userPaths) {
+                        if (userPaths.isEmpty()) null
+                        else {
+                            val allPoints = userPaths.flatMap { it.points }
+                            val minX = allPoints.minOfOrNull { it.x } ?: 0f
+                            val maxX = allPoints.maxOfOrNull { it.x } ?: 0f
+                            val minY = allPoints.minOfOrNull { it.y } ?: 0f
+                            val maxY = allPoints.maxOfOrNull { it.y } ?: 0f
+
+                            // Add 10% padding on all sides
+                            val width = maxX - minX
+                            val height = maxY - minY
+                            val paddingX = width * 0.1f
+                            val paddingY = height * 0.1f
+
+                            Rect(
+                                minX - paddingX,
+                                minY - paddingY,
+                                maxX + paddingX,
+                                maxY + paddingY
+                            )
+                        }
+                    }
+
                     DrawingCanvas(
                         modifier = Modifier.fillMaxSize(),
                         paths = userPaths,
-                        boundingBox = bounds,          // ← NEW PARAM
+                        boundingBox = adjustedBoundingBox,  // Use our padded bounding box
                         currentPath = null,
                         contentPadding = PaddingValues(0.dp),
                         onDrawStart = {},
@@ -150,8 +164,8 @@ fun DrawScreenResult(
 
             // Title & subtitle
             val (title, subtitle) = when (score) {
-                100 -> "Woohoo!"  to "You’ve officially raised the bar! I’m going to need a ladder to reach it!"
-                0   -> "Oops"     to "If this was a treasure map, I’d be lost for sure!"
+                100 -> "Woohoo!"  to "You've officially raised the bar! I'm going to need a ladder to reach it!"
+                0   -> "Oops"     to "If this was a treasure map, I'd be lost for sure!"
                 else-> "Nice try!" to "Keep practicing and see if you can get all the way up!"
             }
             Text(
