@@ -3,7 +3,9 @@ package com.example.scribbledash.features.utils
 import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
-import androidx.compose.ui.graphics.AndroidPath
+import android.util.Log
+
+private const val TAG = "PathNormalizer"
 
 object PathNormalizer {
     /**
@@ -25,15 +27,24 @@ object PathNormalizer {
         exampleStrokeWidth: Float,
         canvasSizePx: Int
     ): List<Path> {
-        if (paths.isEmpty()) return emptyList()
+        if (paths.isEmpty()) {
+            Log.d(TAG, "normalizePaths: Empty paths list, returning empty list")
+            return emptyList()
+        }
+
+        Log.d(TAG, "normalizePaths: Input params - paths.size=${paths.size}, " +
+                "strokeWidth=$strokeWidth, exampleStrokeWidth=$exampleStrokeWidth, " +
+                "canvasSizePx=$canvasSizePx")
 
         // 1) Compute union of all path bounds
         val totalBounds = RectF().apply {
             paths.forEach { path ->
                 val bounds = RectF().also { path.computeBounds(it, /* exact = */ true) }
                 union(bounds)
+                Log.v(TAG, "Path bounds: $bounds")
             }
         }
+        Log.d(TAG, "Total bounds: $totalBounds (width=${totalBounds.width()}, height=${totalBounds.height()})")
 
         // 2) Inset by half the stroke widths (user + extra from example)
         val insetBy    = strokeWidth / 2f
@@ -41,25 +52,44 @@ object PathNormalizer {
         val insetBounds = RectF(totalBounds).apply {
             inset(insetBy + extraInset, insetBy + extraInset)
         }
+        Log.d(TAG, "Inset calculation: insetBy=$insetBy, extraInset=$extraInset")
+        Log.d(TAG, "Inset bounds: $insetBounds (width=${insetBounds.width()}, height=${insetBounds.height()})")
 
         // 3) Compute translation to bring top-left to (0,0)
         val translateX = -insetBounds.left
         val translateY = -insetBounds.top
+        Log.d(TAG, "Translation: dx=$translateX, dy=$translateY")
 
         // 4) Compute uniform scale to fit the inset bounds into the canvas
         val scaleX = canvasSizePx / insetBounds.width()
         val scaleY = canvasSizePx / insetBounds.height()
         val scale  = minOf(scaleX, scaleY)
+        Log.d(TAG, "Scale calculations: scaleX=$scaleX, scaleY=$scaleY, final scale=$scale")
 
         // 5) Build transform matrix (translate then scale)
         val transform = Matrix().apply {
             postTranslate(translateX, translateY)
             postScale(scale, scale)
         }
+        // Log matrix values to verify transform
+        val values = FloatArray(9)
+        transform.getValues(values)
+        Log.d(TAG, "Transform matrix: scaleX=${values[Matrix.MSCALE_X]}, " +
+                "scaleY=${values[Matrix.MSCALE_Y]}, " +
+                "translateX=${values[Matrix.MTRANS_X]}, " +
+                "translateY=${values[Matrix.MTRANS_Y]}")
 
         // 6) Apply transform to each path and return new list
         return paths.map { original ->
-            Path(original).apply { transform(transform) }
+            Path(original).apply {
+                transform(transform)
+                // Log bounds after transformation to verify
+                val transformedBounds = RectF()
+                computeBounds(transformedBounds, true)
+                Log.v(TAG, "Transformed path bounds: $transformedBounds")
+            }
+        }.also {
+            Log.d(TAG, "Normalized ${it.size} paths")
         }
     }
 }

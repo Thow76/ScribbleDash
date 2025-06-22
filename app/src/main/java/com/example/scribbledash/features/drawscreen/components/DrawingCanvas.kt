@@ -23,13 +23,12 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.example.scribbledash.features.drawscreen.presentation.model.StrokeData
-import android.graphics.RectF
+import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.ui.graphics.drawscope.withTransform
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.example.scribbledash.features.drawscreen.components.scaleImage
 import kotlin.math.min
+
+private const val TAG = "DrawingCanvas"
 
 @Composable
 fun DrawingCanvas(
@@ -46,6 +45,11 @@ fun DrawingCanvas(
     onDrawMove: (Offset) -> Unit,
     onDrawEnd: () -> Unit
 ) {
+    Log.d(TAG, "DrawingCanvas composable: paths.size=${paths.size}, " +
+            "currentPath=${if (currentPath != null) "present" else "null"}, " +
+            "boundingBox=${boundingBox?.toString() ?: "null"}, " +
+            "autoFit=$autoFit")
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -71,14 +75,28 @@ fun DrawingCanvas(
                     )
                     .pointerInput(Unit) {
                         detectDragGestures(
-                            onDragStart = onDrawStart,
-                            onDrag = { change, _ -> onDrawMove(change.position) },
-                            onDragEnd = onDrawEnd,
-                            onDragCancel = onDrawEnd
+                            onDragStart = { offset ->
+                                Log.d(TAG, "onDrawStart: raw offset=$offset")
+                                onDrawStart(offset)
+                            },
+                            onDrag = { change, _ ->
+                                Log.v(TAG, "onDrawMove: raw offset=${change.position}")
+                                onDrawMove(change.position)
+                            },
+                            onDragEnd = {
+                                Log.d(TAG, "onDrawEnd")
+                                onDrawEnd()
+                            },
+                            onDragCancel = {
+                                Log.d(TAG, "onDrawCancel")
+                                onDrawEnd()
+                            }
                         )
                     }
             ) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
+                    Log.d(TAG, "Canvas drawing: size=${size.width}x${size.height}")
+
                     val (scale, dx, dy) = scaleImage(
                         paths,
                         currentPath,
@@ -108,18 +126,41 @@ fun DrawingCanvas(
 
                     // Draw strokes
                     val toDraw = paths + listOfNotNull(currentPath)
-                    toDraw.forEach { strokeData ->
+                    Log.d(TAG, "Drawing strokes: count=${toDraw.size}, applying scale=$scale, dx=$dx, dy=$dy")
+
+                    toDraw.forEachIndexed { index, strokeData ->
+                        // For verbose logging, only log full point details for the first stroke
+                        if (index == 0 && strokeData.points.isNotEmpty()) {
+                            val firstPoint = strokeData.points.first()
+                            val lastPoint = strokeData.points.last()
+                            Log.v(TAG, "Stroke $index: points=${strokeData.points.size}, " +
+                                    "first=(${firstPoint.x},${firstPoint.y}), " +
+                                    "last=(${lastPoint.x},${lastPoint.y})")
+
+                            // Log example of transformation for first and last points
+                            val transformedFirst = Offset(firstPoint.x * scale + dx, firstPoint.y * scale + dy)
+                            val transformedLast = Offset(lastPoint.x * scale + dx, lastPoint.y * scale + dy)
+                            Log.v(TAG, "Transformed: first=$transformedFirst, last=$transformedLast")
+                        }
+
                         val transformed = strokeData.points.map { pt ->
                             Offset(
                                 x = pt.x * scale + dx,
                                 y = pt.y * scale + dy
                             )
                         }
-                        drawPath(
-                            path = createSmoothPath(transformed),
-                            color = strokeData.color,
-                            style = strokeData.toStroke()
-                        )
+
+                        try {
+                            val path = createSmoothPath(transformed)
+                            drawPath(
+                                path = path,
+                                color = strokeData.color,
+                                style = strokeData.toStroke()
+                            )
+                            Log.v(TAG, "Drew path $index with ${transformed.size} points, color=${strokeData.color}")
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error drawing path $index: ${e.message}", e)
+                        }
                     }
                 }
             }
@@ -132,16 +173,23 @@ fun DrawingCanvas(
  */
 fun createSmoothPath(points: List<Offset>): Path {
     val path = Path()
-    if (points.isEmpty()) return path
+    if (points.isEmpty()) {
+        Log.d(TAG, "createSmoothPath: Empty points list")
+        return path
+    }
     if (points.size == 1) {
+        Log.d(TAG, "createSmoothPath: Single point, creating minimal line")
         path.moveTo(points[0].x, points[0].y)
         path.lineTo(points[0].x, points[0].y + 0.1f)
         return path
     }
+
     path.moveTo(points[0].x, points[0].y)
     if (points.size == 2) {
+        Log.d(TAG, "createSmoothPath: Two points, creating direct line")
         path.lineTo(points[1].x, points[1].y)
     } else {
+        Log.v(TAG, "createSmoothPath: ${points.size} points, creating smooth path with bezier curves")
         for (i in 1 until points.size) {
             if (i < points.size - 1) {
                 val xc = (points[i].x + points[i + 1].x) / 2
@@ -154,9 +202,3 @@ fun createSmoothPath(points: List<Offset>): Path {
     }
     return path
 }
-
-
-
-
-
-
