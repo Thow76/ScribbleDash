@@ -3,6 +3,7 @@ package com.example.scribbledash.features.drawscreen.components
 import android.util.Log
 import androidx.compose.ui.geometry.Rect
 import com.example.scribbledash.features.drawscreen.presentation.model.StrokeData
+import com.example.scribbledash.features.utils.BoundsCalculator
 
 private const val TAG = "ScaleCanvasImage"
 
@@ -40,15 +41,9 @@ fun scaleImage(
             Log.w(TAG, "scaleImage: No points found to create bounding box")
         }
 
-        val minX = allPoints.minOfOrNull { it.x } ?: 0f
-        val maxX = allPoints.maxOfOrNull { it.x } ?: (minX + 1f)
-        val minY = allPoints.minOfOrNull { it.y } ?: 0f
-        val maxY = allPoints.maxOfOrNull { it.y } ?: (minY + 1f)
-        val width = (maxX - minX).takeIf { it > 0f } ?: 1f
-        val height = (maxY - minY).takeIf { it > 0f } ?: 1f
-
-        Log.d(TAG, "Calculated bounds: minX=$minX, maxX=$maxX, minY=$minY, maxY=$maxY, width=$width, height=$height")
-        Rect(minX, minY, minX + width, minY + height)
+        val rect = BoundsCalculator.calculateBounds(allPoints)
+        Log.d(TAG, "Calculated bounds: $rect")
+        rect
     }
 
     Log.d(TAG, "Using bounding box: $box (width=${box.width}, height=${box.height})")
