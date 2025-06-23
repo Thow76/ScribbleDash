@@ -62,9 +62,10 @@ fun scaleImage(
 
     Log.d(TAG, "Scale calculations: scaleX=$scaleX, scaleY=$scaleY, final scale=$scale")
 
-    // Center offsets
-    val dx = (canvasW - drawingWidth * scale) / 2f - box.left * scale
-    val dy = (canvasH - drawingHeight * scale) / 2f - box.top * scale
+    // Translate drawing so its top-left corner aligns with the origin
+    // to mirror PathNormalizer behavior
+    val dx = -box.left * scale
+    val dy = -box.top * scale
 
     Log.d(TAG, "Offset calculations: dx=$dx, dy=$dy")
 
