@@ -55,7 +55,9 @@ object PathNormalizer {
         Log.d(TAG, "Inset calculation: insetBy=$insetBy, extraInset=$extraInset")
         Log.d(TAG, "Inset bounds: $insetBounds (width=${insetBounds.width()}, height=${insetBounds.height()})")
 
-        // 3) Compute translation to bring top-left to (0,0)
+        // 3) Compute translation to bring top-left to (0,0).
+        //    This keeps the normalized paths anchored at the origin,
+        //    unlike [scaleImage] which recenters drawings for display.
         val translateX = -insetBounds.left
         val translateY = -insetBounds.top
         Log.d(TAG, "Translation: dx=$translateX, dy=$translateY")

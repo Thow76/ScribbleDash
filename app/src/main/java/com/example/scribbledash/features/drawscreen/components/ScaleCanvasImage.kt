@@ -11,6 +11,10 @@ private const val TAG = "ScaleCanvasImage"
  * (canvasW, canvasH). If `boundingBox` is non-null, it will be used directly; otherwise
  * the bounding box is computed from the provided paths. When `autoFit` is false, returns
  * identity transform (scale=1, dx=0, dy=0).
+ *
+ * The returned offsets center the drawing within the canvas. This differs from
+ * [PathNormalizer.normalizePaths], which aligns paths to the top-left origin for
+ * bitmap comparison.
  */
 fun scaleImage(
     paths: List<StrokeData>,
