@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.platform.LocalDensity
+import com.example.scribbledash.features.utils.BoundsCalculator
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -129,23 +130,7 @@ fun DrawScreenResult(
                         if (userPaths.isEmpty()) null
                         else {
                             val allPoints = userPaths.flatMap { it.points }
-                            val minX = allPoints.minOfOrNull { it.x } ?: 0f
-                            val maxX = allPoints.maxOfOrNull { it.x } ?: 0f
-                            val minY = allPoints.minOfOrNull { it.y } ?: 0f
-                            val maxY = allPoints.maxOfOrNull { it.y } ?: 0f
-
-                            // Add 10% padding on all sides
-                            val width = maxX - minX
-                            val height = maxY - minY
-                            val paddingX = width * 0.1f
-                            val paddingY = height * 0.1f
-
-                            Rect(
-                                minX - paddingX,
-                                minY - paddingY,
-                                maxX + paddingX,
-                                maxY + paddingY
-                            )
+                            BoundsCalculator.calculateBounds(allPoints, 0.1f)
                         }
                     }
 
