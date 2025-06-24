@@ -45,7 +45,6 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.example.scribbledash.R
 import com.example.scribbledash.features.drawscreen.presentation.components.DrawingCanvas
-import com.example.scribbledash.features.drawscreen.presentation.components.createSmoothPath
 import com.example.scribbledash.features.drawscreen.presentation.model.StrokeData
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.layout.*

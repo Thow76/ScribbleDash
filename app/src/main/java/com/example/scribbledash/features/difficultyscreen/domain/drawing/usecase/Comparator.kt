@@ -11,6 +11,7 @@ import com.example.scribbledash.features.utils.CoverageCalculator
 import com.example.scribbledash.features.utils.PathNormalizer
 import com.example.scribbledash.features.utils.PixelComparator
 import com.example.scribbledash.features.utils.StrokeWidthScaler
+import com.example.scribbledash.features.utils.DrawingUtils
 
 object Comparator : DrawingComparer {
     private const val CANVAS_SIZE_PX = 512
@@ -93,33 +94,7 @@ object Comparator : DrawingComparer {
      * mirroring your Compose createSmoothPath() logic.
      */
     private fun offsetsToAndroidPathSmooth(points: List<Offset>): AndroidPath {
-        val path = AndroidPath()
-        if (points.isEmpty()) return path
-
-        if (points.size == 1) {
-            path.moveTo(points[0].x, points[0].y)
-            path.lineTo(points[0].x, points[0].y + 0.1f)
-            return path
-        }
-
-        path.moveTo(points[0].x, points[0].y)
-        if (points.size == 2) {
-            path.lineTo(points[1].x, points[1].y)
-        } else {
-            for (i in 1 until points.size) {
-                if (i < points.size - 1) {
-                    val xc = (points[i].x + points[i + 1].x) / 2f
-                    val yc = (points[i].y + points[i + 1].y) / 2f
-                    path.quadraticBezierTo(
-                        points[i].x, points[i].y,  // control point
-                        xc, yc                      // end point
-                    )
-                } else {
-                    path.lineTo(points[i].x, points[i].y)
-                }
-            }
-        }
-        return path
+        return DrawingUtils.smoothPath(points).asAndroidPath()
     }
 }
 
