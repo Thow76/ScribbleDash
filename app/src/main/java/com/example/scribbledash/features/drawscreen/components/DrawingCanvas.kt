@@ -26,6 +26,7 @@ import com.example.scribbledash.features.drawscreen.presentation.model.StrokeDat
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import com.example.scribbledash.features.drawscreen.components.scaleImage
+import com.example.scribbledash.features.utils.DrawingUtils
 import kotlin.math.min
 
 private const val TAG = "DrawingCanvas"
@@ -171,34 +172,4 @@ fun DrawingCanvas(
 /**
  * Creates a smooth path from points using Bezier curves
  */
-fun createSmoothPath(points: List<Offset>): Path {
-    val path = Path()
-    if (points.isEmpty()) {
-        Log.d(TAG, "createSmoothPath: Empty points list")
-        return path
-    }
-    if (points.size == 1) {
-        Log.d(TAG, "createSmoothPath: Single point, creating minimal line")
-        path.moveTo(points[0].x, points[0].y)
-        path.lineTo(points[0].x, points[0].y + 0.1f)
-        return path
-    }
-
-    path.moveTo(points[0].x, points[0].y)
-    if (points.size == 2) {
-        Log.d(TAG, "createSmoothPath: Two points, creating direct line")
-        path.lineTo(points[1].x, points[1].y)
-    } else {
-        Log.v(TAG, "createSmoothPath: ${points.size} points, creating smooth path with bezier curves")
-        for (i in 1 until points.size) {
-            if (i < points.size - 1) {
-                val xc = (points[i].x + points[i + 1].x) / 2
-                val yc = (points[i].y + points[i + 1].y) / 2
-                path.quadraticBezierTo(points[i].x, points[i].y, xc, yc)
-            } else {
-                path.lineTo(points[i].x, points[i].y)
-            }
-        }
-    }
-    return path
-}
+fun createSmoothPath(points: List<Offset>): Path = DrawingUtils.smoothPath(points)
